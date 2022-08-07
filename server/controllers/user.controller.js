@@ -1,5 +1,7 @@
 import httpStatus from 'http-status';
 import db from '../../config/sequelize';
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 
 const { User } = db;
 
@@ -34,14 +36,13 @@ function get(req, res) {
  * @property {string} req.body.mobileNumber - The mobileNumber of user.
  * @returns {User}
  */
-function create(req, res, next) {
-  const user = User.build({
-    username: req.body.username,
-  });
+async function create(req, res, next) {
+  const userCreated = await db.sequelize.query(`
+  INSERT INTO public.users
+  ("name", rut, "password", username, email, "number", created_at, updated_at, is_validated, validation_method, user_type, photo)
+  VALUES('${req.body.name}', '${req.body.rut}', '${req.body.password}', '${req.body.username}', '${req.body.email}', '${req.body.number}', now(), now(), false, 'idphoto', '${req.body.usertype}', null)`);
 
-  user.save()
-    .then((savedUser) => res.json(savedUser))
-    .catch((e) => next(e));
+  res.json(userCreated);
 }
 
 /**
@@ -66,11 +67,9 @@ function update(req, res, next) {
  * @property {number} req.query.limit - Limit number of users to be returned.
  * @returns {User[]}
  */
-function list(req, res, next) {
-  const { limit = 50 } = req.query;
-  User.findAll({ limit })
-    .then((users) => res.json(users))
-    .catch((e) => next(e));
+async function list(req, res, next) {
+  const users = await db.sequelize.query("SELECT * FROM users");
+  res.json(users[0]);
 }
 
 /**

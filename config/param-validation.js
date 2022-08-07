@@ -5,6 +5,12 @@ export default {
   createUser: {
     body: Joi.object({
       username: Joi.string().required(),
+      rut: Joi.string().required(),
+      password: Joi.string().required(),
+      email: Joi.string().required(),
+      name: Joi.string().required(),
+      number: Joi.string().required(),
+      usertype: Joi.string().required()
     }),
   },
 
@@ -24,7 +30,7 @@ export default {
   // POST /api/auth/login
   login: {
     body: Joi.object({
-      username: Joi.string().required(),
+      rut: Joi.string().required(),
       password: Joi.string().required(),
     }),
   },
