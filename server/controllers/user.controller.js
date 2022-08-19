@@ -30,6 +30,11 @@ function get(req, res) {
   return res.json(req.user);
 }
 
+async function getByType(req, res) {
+  const users = await db.sequelize.query(`select * from users where user_type = '${req.params.type}'`);
+  res.json(users[0]);
+}
+
 /**
  * Create new user
  * @property {string} req.body.username - The username of user.
@@ -85,5 +90,5 @@ function remove(req, res, next) {
 }
 
 export default {
-  load, get, create, update, list, remove,
+  load, get, create, update, list, remove, getByType
 };

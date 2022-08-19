@@ -7,25 +7,16 @@ const isLoggedIn = require("../middlewares/auth.middleware");
 const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/')
-
-/** GET /api/users - Get list of users */
   .get(isLoggedIn, userCtrl.list)
-
-/** POST /api/users - Create new user */
   .post(validate(paramValidation.createUser), userCtrl.create);
 
-router.route('/:userId')
-
-/** GET /api/users/:userId - Get user */
-  .get(userCtrl.get)
-
-/** PUT /api/users/:userId - Update user */
+router.route('/:userId').get(userCtrl.get)
   .put(validate(paramValidation.updateUser), userCtrl.update)
-
-/** DELETE /api/users/:userId - Delete user */
   .delete(userCtrl.remove);
 
-/** Load user when API with userId route parameter is hit */
+router.route('/type/:type')
+.get(userCtrl.getByType);
+
 router.param('userId', userCtrl.load);
 
 export default router;
