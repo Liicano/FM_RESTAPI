@@ -20,12 +20,12 @@ gulp.task('clean', (done) => {
 });
 
 // Copy non-js files to dist
-gulp.task('copy', () => gulp.src(paths.nonJs)
+gulp.task('copy', () => gulp.src(paths.nonJs, {"allowEmpty": true})
   .pipe(plugins.newer('dist'))
   .pipe(gulp.dest('dist')));
 
 // Compile ES6 to ES5 and copy to dist
-gulp.task('babel', () => gulp.src([...paths.js, '!gulpfile.babel.js'], { base: '.' })
+gulp.task('babel', () => gulp.src([...paths.js, '!gulpfile.babel.js'], { base: '.' , "allowEmpty": true})
   .pipe(plugins.newer('dist'))
   .pipe(plugins.sourcemaps.init())
   .pipe(plugins.babel())
