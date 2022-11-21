@@ -26,3 +26,4 @@ router.route('/profession/:id')
 router.param('userId', userCtrl.load);
 
 export default router;
+
