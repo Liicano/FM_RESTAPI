@@ -5,6 +5,7 @@
   "author": "Hector Gonzalez <Liicano>",
   "main": "index.js",
   "private": false,
+  "type": "module",
   "engines": {
     "node": ">= 12.22.9",
     "npm": ">= 6.12.0",
