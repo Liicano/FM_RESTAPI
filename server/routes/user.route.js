@@ -17,6 +17,12 @@ router.route('/:userId').get(userCtrl.get)
 router.route('/type/:type')
 .get(userCtrl.getByType);
 
+router.route('/search/:service/:country/:region/:city')
+.get(userCtrl.getBySearch);
+
+router.route('/profession/:id')
+.get(userCtrl.getByProfessions);
+
 router.param('userId', userCtrl.load);
 
 export default router;

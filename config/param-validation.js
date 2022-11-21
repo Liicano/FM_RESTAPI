@@ -30,7 +30,7 @@ export default {
   // POST /api/auth/login
   login: {
     body: Joi.object({
-      rut: Joi.string().required(),
+      email: Joi.string().required(),
       password: Joi.string().required(),
     }),
   },

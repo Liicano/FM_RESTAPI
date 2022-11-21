@@ -28,11 +28,22 @@ const sequelizeOptions = {
     },
   }),
 };
-const sequelize = new Sequelize(
+
+/* const sequelize = new Sequelize(
   config.postgres.db,
   config.postgres.user,
   config.postgres.passwd,
   sequelizeOptions,
+);
+ */
+const sequelize = new Sequelize(config.postgres.link, {
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  }
+}
 );
 
 const modelsDir = path.normalize(`${__dirname}/../server/models`);

@@ -35,6 +35,50 @@ async function getByType(req, res) {
   res.json(users[0]);
 }
 
+async function getBySearch(req, res) {
+  let u = [];
+  const users = await db.sequelize.query(`select jsonb_build_object(
+    'user', u.*,
+    'locations', jsonb_agg(jsonb_build_object('region', r."name", 'city', c."name")),
+    'services', jsonb_agg(jsonb_build_object('name', sc."name", 'id', sc."id"))
+  )  from users u 
+    inner join services s on u.id = s.user_id
+    inner join user_locations ul on ul.id_user = u.id
+    inner join cities c on ul.id_city = c.id_city 
+    inner join regions r on r.id_region = ul.id_region   
+    inner join services_categories sc on sc.id = s.category 
+    ${req.params.service == 'all' ? 'where true' : 'where sc.id = ' + req.params.service}
+    and ul.id_country = '${req.params.country}'
+    and ul.id_region = '${req.params.region}'
+    and ul.id_city = '${req.params.city}'
+   group by u.*`);
+
+   if(users[0] != null && users[0].length > 0){
+    u = users[0].map(u => u.jsonb_build_object);
+ }
+
+res.json(u);
+}
+
+async function getByProfessions(req, res){
+  let u = [];
+  const users = await db.sequelize.query(`select jsonb_build_object(
+    'user', u.*,
+    'locations', jsonb_agg(jsonb_build_object('region', r."name", 'city', c."name")) 
+  )  from users u 
+    inner join services s on u.id = s.user_id
+    inner join user_locations ul on ul.id_user = u.id
+    inner join cities c on ul.id_city = c.id_city 
+    inner join regions r on r.id_region = ul.id_region 
+    inner join services_categories sc on sc.id = s.category where sc.id = ${req.params.id} group by u.*`);
+    
+    if(users[0] != null && users[0].length > 0){
+       u = users[0].map(u => u.jsonb_build_object);
+    }
+
+  res.json(u);
+}
+
 /**
  * Create new user
  * @property {string} req.body.username - The username of user.
@@ -69,7 +113,7 @@ function update(req, res, next) {
 /**
  * Get user list.
  * @property {number} req.query.skip - Number of users to be skipped.
- * @property {number} req.query.limit - Limit number of users to be returned.
+ * @property {number} req.query.limit - Limit number of users to be returned. 
  * @returns {User[]}
  */
 async function list(req, res, next) {
@@ -90,5 +134,5 @@ function remove(req, res, next) {
 }
 
 export default {
-  load, get, create, update, list, remove, getByType
+  load, get, create, update, list, remove, getByType, getByProfessions, getBySearch
 };

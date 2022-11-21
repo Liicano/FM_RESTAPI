@@ -13,20 +13,29 @@ import db from '../../config/sequelize';
  * @returns {*}
  */
 async function login(req, res, next) {
-  const result = await db.sequelize.query(`SELECT username, rut, password FROM users where rut = '${req.body.rut}' and password = '${req.body.password}'`);
+  const result = await db.sequelize.query(`SELECT id, username, rut, email, password FROM users where email = '${req.body.email}' and password = '${req.body.password}'`);
   let user = result[0] && result[0].length > 0 ? result[0][0] : null;
 
   if(user != null){
-    if (req.body.rut === user.rut && req.body.password === user.password) {
+
+    if (user) { 
       const token = jwt.sign({
         username: user.username,
-        expiresIn: 3600,
+        id: user.id,
+        email: user.email,
+        rut: user.rut,
+        expiresIn: 36000,
       }, config.jwtSecret);
       return res.json({
         token,
         username: user.username,
       });
     }
+  } else{
+    return res.json({
+      token: null,
+      username: null,
+    });
   }
 
   const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
