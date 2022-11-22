@@ -10,6 +10,7 @@
     "npm": ">= 6.12.0",
     "yarn": ">= 1.17.3"
   },
+  "type": "module",
   "scripts": {
     "start": "gulp serve",
     "start:debug": "cross-env DEBUG=fm_motors:* yarn start",
